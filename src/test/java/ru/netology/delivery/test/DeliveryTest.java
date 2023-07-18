@@ -1,5 +1,6 @@
 package ru.netology.delivery.test;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,8 +46,9 @@ class DeliveryTest {
         $("input[name=phone]").setValue(phone);
         $("label[data-test-id=agreement]").click();
         $(byText("Запланировать")).click();
-        $(withText("Успешно!")).should(appear, Duration.ofSeconds(11));
-        $x("//div[contains(text(), 'Успешно!')]");
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно запланирована на " + firstMeetingDate), Duration.ofSeconds(11))
+                .shouldBe(Condition.visible);
         refresh();
         $("span[data-test-id = city]").click();
         $("input[placeholder=Город]").setValue(city);
@@ -60,16 +62,9 @@ class DeliveryTest {
         $(byText("Запланировать")).click();
         $x("//*[contains(text(), 'У вас уже запланирована встреча на другую дату. Перепланировать?!");
         $x("//span[contains(text(), 'Перепланировать')]").click();
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно запланирована на " + secondMeetingDate), Duration.ofSeconds(11))
+                .shouldBe(Condition.visible);
         $x("//div[contains(text(), 'Успешно!')]");
-
-
-
-
-
-        // TODO: добавить логику теста в рамках которого будет выполнено планирование и перепланирование встречи.
-        // Для заполнения полей формы можно использовать пользователя validUser и строки с датами в переменных
-        // firstMeetingDate и secondMeetingDate. Можно также вызывать методы generateCity(locale),
-        // generateName(locale), generatePhone(locale) для генерации и получения в тесте соответственно города,
-        // имени и номера телефона без создания пользователя в методе generateUser(String locale) в датагенераторе
     }
 }
